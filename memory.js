@@ -1,8 +1,9 @@
-console.log("heyyyyy");
+ console.log("heyyyyy");
 
 var view = {
 	displayTimer: function(){
 		//This code will run the timer at the bottom of the page.
+		document.getElementById("timer").innerHTML = "Time Remaining: " + "PLACEHOLDER";
 	},
 	displayEndResult: function(){
 		//This will display either failure (in the case of the timer running out--love it if it could display a couple screenshots of Wolverine tearing up his room and making excuses (in case of a close call), or just like hulking out and destroying everything(in case of minimal matches beforehand)) or victory (in the case of making all matches before the timer runs out)
@@ -19,6 +20,17 @@ var view = {
 		//And this will take care of turning the cards "facedown" either after a set number of seconds (15?) or 3 seconds after a second, non-matching card is clicked. Matched pairs are left face-up, so this function should not mess with them.
 		var name = "img/cover.jpg";
 		image.src = name;
+	},
+	displayMatches: function(){
+		//This code displays text with the current number of matches on the screen
+		document.getElementById("matches").innerHTML = "Matches: " + 0;
+	},
+	startGame: function(){
+		//This method pulls up the table when the "start" button is clicked. It also hides the start button.
+		document.getElementById("board").style.display = "block";
+		document.getElementById("temp").style.display = "none";
+		view.displayTimer();
+		view.displayMatches();
 	}
 };
 var model = {
@@ -27,8 +39,9 @@ var model = {
 	numPairs: this.numCards/2,
 	matches: 0,
 
-	cards: [
-	//locations of various pairs
+	cards: ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve", "thirteen", "fourteen", "fifteen"],
+	cardLoc: [
+		//locations of the chosen cards.
 	],
 
 	generateCards: function(){
@@ -54,8 +67,9 @@ function init(){
 	for(var i=0; i<images.length; i++){
 		images[i].onclick = view.displayCard;
 	}
+	document.getElementById("board").style.display = "none";
+	document.getElementById("start").onclick = view.startGame;
 }
-
 
 /*
 	Okay.
