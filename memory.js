@@ -73,17 +73,8 @@ var model = {
 				this.cardLoc.locations.push(loc);
 			}
 		}
-		this.cardLoc.matches.length = 16;
-
-	/*		
-		var loc = placeCards();
-		for(var i=0; i<this.numCards; i++){
-			do{
-				loc = this.placeCards();
-			} while(this.collision(loc));
-			this.cardLoc.locations[i] = loc;
-		}
-	*/
+		this.cardLoc.matches.length = this.numCards;
+		this.placeClass();
 	},
 	placeCards: function(){
 		//this method places the cards randomly on the board (by adding images with classes to table cells)
@@ -92,32 +83,23 @@ var model = {
 		row = Math.floor(Math.random()*this.boardSize);
 		col = Math.floor(Math.random()*this.boardSize);
 		return row+""+col;
-//		var classy = this.cards[2];
-//		document.getElementById("00").setAttribute("class", classy);
 	},
 	placeClass: function(){
 		//adds classes to the img elements in the HTML page
+		var locale = this.cardLoc.locations;
+		for(var i=0; i<locale.length; i++){
+			var classy = this.pairs[i];
+			document.getElementById(locale[i]).setAttribute("class", classy);
+		}
 
 	},
 	collision: function(loc){
 		//this method checks that each card goes in its own cell without adding an extra class to an already-occupied cell
-		//var counter = 0;
 		var locale = this.cardLoc.locations;
 		if(locale.indexOf(loc) == -1){
 			return false;
 		}
 		return true;
-		/*
-		for(var i=0; i<locale.length; i++){
-			if(locale[i] == loc){
-				counter++;
-			}
-		}
-		if(counter > 1){
-			return true;
-		}
-		return false;
-		*/
 	},
 	roundTwo: function(){
 		//this method updates the variables at the top of the model for the second round of memory, and possibly reiterates a few of initial functions.
