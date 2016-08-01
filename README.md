@@ -8,4 +8,4 @@ As of July 30th, all I've got are some hard-coded cards you can flip around and 
 
 ---
 
-Yesterday was a lot of getting the view object going. Today (July 31) I've been working mostly on the model. I can now generate arrays of random pairs of cards and assign them random spots on the board. Still working on getting them to actually show up in their assigned places, which is my (hopefully reasonable) goal for the end of this evening.
+Yesterday was a lot of getting the view object going. Today (July 31) I've been working mostly on the model. I can now generate arrays of random pairs of cards and assign them random spots on the board. Still working on getting them to actually show up in their assigned places, which is my (<strike>hopefully reasonable</strike> INCREDIBLY SIMPLE???) goal for the end of this evening.
