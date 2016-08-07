@@ -1,29 +1,67 @@
 console.log("heyyyyy");
 
 var view = {
+	cover: "img/cover.jpg",
+	matched: "img/match.jpg",
+	winner: "url(img/winner.jpg)",
+	noCigar: "url(img/nocigar.jpg)",
+	loser: "url(img/loser.jpg)",
+	roundTwoChoice: "url(img/nextlevel1.jpg)",
+	roundThreeChoice: "url(img/nextlevel2.jpg)",
+	boardSize: "500px",
 	displayTimer: function(){
 		//This code will run the timer at the bottom of the page.
 		document.getElementById("timer").innerHTML = "Time Remaining: " + "PIZZA";
 	},
 	displayEndResult: function(){
-		//This will display either failure (in the case of the timer running out--love it if it could display a couple screenshots of Wolverine tearing up his room and making excuses (in case of a close call), or just like hulking out and destroying everything(in case of minimal matches beforehand)) or victory (in the case of making all matches before the timer runs out)
+		document.getElementById("timer").style.display = "none";
+		document.getElementById("score").style.display = "block";
+		this.displayScore();
+		var board = document.getElementById("board");
+		board.innerHTML = "";
+		if(model.matches == model.numPairs){
+			//winner.jpg!
+			//this'll have to be altered somewhat if there's more than one level
+			board.style.background = this.winner;
+			board.style["background-size"] = this.boardSize;
+		} else if (model.matches < model.numPairs && model.matches > model.numPairs/2){
+			board.style.background = this.noCigar;
+			board.style["background-size"] = this.boardSize;
+			//nocigar.jpg
+		} else {
+			board.style.background = this.loser;
+			board.style["background-size"] = this.boardSize;
+			//loser.jpg
+		}
+		//This will display either failure (two versions--one in case of a close call when the timer runs out, the other in case of abject failure) or victory (in the case of making all matches before the timer runs out)
 	},
 	displayCard: function(eventObj){
 		var image = eventObj.target;
 		var name = image.className;
 		name = "img/" + name + ".jpg";
 		image.src = name;
-		setTimeout(view.displayCover, 15000, image); // this line is going to go once I have the matching system working.
+		//if(faceCard2){
+			//I'm just trying to set it up so that only two cards can be face up at a time but I can't figure it out today
+			//image.src = name;
+			//setTimeout(view.displayCover, 15000, image);  // this line is going to go once I have the matching system working.
+		//}
 		//This will take care of "turning over" the cards when they're clicked. One code for all different image names
 	},
 	displayCover: function(image){
 		//And this will take care of turning the cards "facedown" either after a set number of seconds (15?) or 3 seconds after a second, non-matching card is clicked. Matched pairs are left face-up, so this function should not mess with them.
-		var name = "img/cover.jpg";
-		image.src = name;
+		image.src = this.cover;
 	},
 	displayMatches: function(){
 		//This code displays text with the current number of matches on the screen
 		document.getElementById("matches").innerHTML = "Matches: " + model.matches;
+	},
+	displayMatched: function(imageOne, imageTwo){
+		imageOne.src = this.matched;
+		imageTwo.src = this.matched;
+	},
+	displayScore: function(){
+		//calculates and shows the final score.
+		document.getElementById("score").innerHTML = "Score: " + model.score;
 	},
 	startGame: function(){
 		//This method pulls up the table when the "start" button is clicked. It also hides the start button.
@@ -43,6 +81,8 @@ var model = {
 	matches: 0,
 	secondsInRound: 180,
 	timeRemaining: this.secondsInRound*1000,
+	score: 0,
+	clicks: 0,
 
 	cards: ["zero", "one", "two", "three", "four", "five", "six", "seven",
 			"eight", "nine", "ten", "eleven", "twelve", "thirteen", "fourteen", "fifteen"],
@@ -106,14 +146,67 @@ var model = {
 	}
 };
 var controller = {
+	clicks: 0,
+	firstChoice,
+	secondChoice,
 	startGame: function(){
 		//this method tells everything to get running for the first round.
 		view.startGame();
 		model.generatePairs();
 	},
+	isMatch: function(first, second){
+		//ALLLLL this method does is check for a match between two turned-over cards. Returns true for a match and false otherwise.
+		var firstMatch = first.className;
+		var secondMatch = second.className;
+		if(firstMatch == secondMatch){
+			model.matches++;
+			view.displayMatches();
+			return true;
+		}
+		return false;
+	},
+	chooseCard: function(card){
+		if(this.clicks == 2){
+			view.displayCover();
+		}
+		if(model.clicks == 0){
+			this.firstChoice = card;
+			view.displayCard(card);
+			this.clicks = 1;
+		} else {
+			this.clicks = 2;
+		}
+	}
 	processGuess: function(){
-		//this code determines whether or not the two recently clicked cards are a match. Returns true if they are and false if not.
+		var images = document.getElementsByTagName("img");
+		var faceCard = 0;
+		for(var i=0; i<model.cardLoc.locations.length; i++){
+			if(images[i].src.search("cover") > -1){
+				faceCard++;
+			}
+		}
+		//Gathers the info about the two most recent matches.
 		//It also makes sure that the pair turns back over (provided they're not a match) if a third card is clicked. So, the third card would turn faceup at the same time the other two turn facedown.
+	},
+	thing: function(){
+		var faceCard = 0;
+		var images = document.getElementsByTagName("img");
+		for(var i=0; i<model.cardLoc.locations.length; i++){
+			var imgsrc = images[i].src;
+			if(imgsrc !== "img/cover.jpg"){
+				faceCard++;
+				console.log(faceCard);
+			}
+		}
+		if(faceCard < 3){
+			image.src = name;
+		} else if(faceCard == 3){
+			for(var i=0; i<model.cardLoc.locations.length; i++){
+				images[i].src = "img/cover.jpg";
+			}
+			image.src = name;
+			faceCard = 0;
+		}
 	}
 };
 
@@ -124,6 +217,7 @@ function init(){
 		images[i].onclick = view.displayCard;
 	}
 	document.getElementById("board").style.display = "none";
+	document.getElementById("score").style.display = "none";
 	document.getElementById("start").onclick = controller.startGame;
 }
 
