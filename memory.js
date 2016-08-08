@@ -53,7 +53,7 @@ var view = {
 	},
 	displayMatches: function(){
 		//This code displays text with the current number of matches on the screen
-		document.getElementById("matches").innerHTML = "Matches: " + model.matches;
+		document.getElementById("score").innerHTML = "Matches: " + model.matches;
 	},
 	displayMatched: function(imageOne, imageTwo){
 		imageOne.src = this.matched;
@@ -66,6 +66,7 @@ var view = {
 	startGame: function(){
 		//This method pulls up the table when the "start" button is clicked. It also hides the start button.
 		document.getElementById("board").style.display = "block";
+		document.getElementById("score").style.display = "block";
 		document.getElementById("temp").style.display = "none";
 		view.displayTimer();
 		view.displayMatches();
@@ -82,7 +83,6 @@ var model = {
 	secondsInRound: 180,
 	timeRemaining: this.secondsInRound*1000,
 	score: 0,
-	clicks: 0,
 
 	cards: ["zero", "one", "two", "three", "four", "five", "six", "seven",
 			"eight", "nine", "ten", "eleven", "twelve", "thirteen", "fourteen", "fifteen"],
@@ -147,8 +147,8 @@ var model = {
 };
 var controller = {
 	clicks: 0,
-	firstChoice,
-	secondChoice,
+	firstChoice: "",
+	secondChoice: "",
 	startGame: function(){
 		//this method tells everything to get running for the first round.
 		view.startGame();
@@ -165,18 +165,32 @@ var controller = {
 		}
 		return false;
 	},
+	check: function(one, two){
+		//clearInterval(timer);
+		if(this.isMatch(this.firstChoice, this.secondChoice)){
+			view.displayMatched(this.firstChoice, this.secondChoice);
+			model.matches++;
+		} else {
+			view.displayCover(this.firstChoice);
+			view.displayCover(this.secondChoice);
+		}
+	},
 	chooseCard: function(card){
 		if(this.clicks == 2){
-			view.displayCover();
+			this.clicks = 0;
 		}
-		if(model.clicks == 0){
+		if(this.clicks == 0){
 			this.firstChoice = card;
 			view.displayCard(card);
 			this.clicks = 1;
+			return;
 		} else {
+			this.secondChoice = card;
+			view.displayCard(card);
 			this.clicks = 2;
+			setInterval(controller.check(this.firstChoice, this.secondChoice), 1000);
 		}
-	}
+	},
 	processGuess: function(){
 		var images = document.getElementsByTagName("img");
 		var faceCard = 0;
@@ -214,7 +228,8 @@ window.onload = init;
 function init(){
 	var images = document.getElementsByTagName("img");
 	for(var i=0; i<images.length; i++){
-		images[i].onclick = view.displayCard;
+		//images[i].onclick = view.displayCard;
+		images[i].onclick = controller.chooseCard;
 	}
 	document.getElementById("board").style.display = "none";
 	document.getElementById("score").style.display = "none";
