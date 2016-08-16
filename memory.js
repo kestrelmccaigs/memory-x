@@ -149,6 +149,8 @@ var controller = {
 	clicks: 0,
 	firstChoice: "",
 	secondChoice: "",
+	targetOne: "",
+	targetTwo: "",
 	startGame: function(){
 		//this method tells everything to get running for the first round.
 		view.startGame();
@@ -156,8 +158,7 @@ var controller = {
 	},
 	isMatch: function(first, second){
 		//ALLLLL this method does is check for a match between two turned-over cards. Returns true for a match and false otherwise.
-		var firstMatch = first.className;
-		var secondMatch = second.className;
+		
 		if(firstMatch == secondMatch){
 			model.matches++;
 			view.displayMatches();
@@ -167,28 +168,46 @@ var controller = {
 	},
 	check: function(one, two){
 		//clearInterval(timer);
-		if(this.isMatch(this.firstChoice, this.secondChoice)){
-			view.displayMatched(this.firstChoice, this.secondChoice);
+		console.log("checking!")
+		if(one == two){
+			view.displayMatched(this.targetOne, this.targetTwo);
 			model.matches++;
+			view.displayMatches();
+			console.log("it's a match made in heaven!");
 		} else {
-			view.displayCover(this.firstChoice);
-			view.displayCover(this.secondChoice);
+			view.displayCover(controller.targetOne);
+			view.displayCover(controller.targetTwo);
+			console.log("no matches here!");
 		}
+/*		if(this.isMatch(this.firstChoice, this.secondChoice)){
+			view.displayMatched(this.targetOne, this.targetTwo);
+			model.matches++;
+			console.log("it's a match made in heaven")
+		} else {
+			view.displayCover(this.targetOne);
+			view.displayCover(this.targetTwo);
+			console.log("no matches here!")
+		}
+*/
 	},
-	chooseCard: function(card){
-		if(this.clicks == 2){
-			this.clicks = 0;
-		}
-		if(this.clicks == 0){
-			this.firstChoice = card;
-			view.displayCard(card);
-			this.clicks = 1;
-			return;
+	chooseCard: function(eventObj){
+//		if(this.clicks == 2){
+//			this.clicks = 0;
+//		}
+		if(controller.clicks === 0){
+			this.targetOne = eventObj.target.id;
+			console.log(this.targetOne);
+			this.firstChoice = eventObj.target.className;
+			view.displayCard(eventObj);
+			controller.clicks = 1;
+//			return;
 		} else {
-			this.secondChoice = card;
-			view.displayCard(card);
-			this.clicks = 2;
-			setInterval(controller.check(this.firstChoice, this.secondChoice), 1000);
+			this.targetTwo = eventObj.target.id;
+			console.log(this.targetTwo);
+			this.secondChoice = eventObj.target.className;
+			view.displayCard(eventObj);
+			controller.clicks = 0;
+			controller.check(this.firstChoice, this.secondChoice);
 		}
 	},
 	processGuess: function(){
