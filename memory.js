@@ -56,8 +56,16 @@ var view = {
 		document.getElementById("score").innerHTML = "Matches: " + model.matches;
 	},
 	displayMatched: function(imageOne, imageTwo){
-		imageOne.src = this.matched;
-		imageTwo.src = this.matched;
+		var one = document.getElementById(imageOne);
+		var two = document.getElementById(imageTwo);
+		one.src = this.matched;
+		two.src = this.matched;
+		one.removeAttribute("class");
+		one.setAttribute("class", "matched");
+		two.removeAttribute("class");
+		two.setAttribute("class", "matched");
+//		imageOne.src = this.matched;
+//		imageTwo.src = this.matched;
 	},
 	displayScore: function(){
 		//calculates and shows the final score.
@@ -170,7 +178,7 @@ var controller = {
 		//clearInterval(timer);
 		console.log("checking!")
 		if(one == two){
-			view.displayMatched(this.targetOne, this.targetTwo);
+			view.displayMatched(controller.targetOne, controller.targetTwo);
 			model.matches++;
 			view.displayMatches();
 			console.log("it's a match made in heaven!");
@@ -194,20 +202,23 @@ var controller = {
 //		if(this.clicks == 2){
 //			this.clicks = 0;
 //		}
-		if(controller.clicks === 0){
-			this.targetOne = eventObj.target.id;
-			console.log(this.targetOne);
-			this.firstChoice = eventObj.target.className;
-			view.displayCard(eventObj);
-			controller.clicks = 1;
-//			return;
+		if(eventObj.target.className !== "matched"){
+			if(controller.clicks === 0){
+				controller.targetOne = eventObj.target.id;
+				controller.firstChoice = eventObj.target.className;
+				view.displayCard(eventObj);
+				controller.clicks = 1;
+			} else {
+				controller.targetTwo = eventObj.target.id;
+				controller.secondChoice = eventObj.target.className;
+				view.displayCard(eventObj);
+				controller.clicks = 0;
+				controller.check(controller.firstChoice, controller.secondChoice);
+			}
+			console.log(controller.firstChoice + " " + controller.secondChoice);
+			console.log(controller.targetOne + " " + controller.targetTwo);
 		} else {
-			this.targetTwo = eventObj.target.id;
-			console.log(this.targetTwo);
-			this.secondChoice = eventObj.target.className;
-			view.displayCard(eventObj);
-			controller.clicks = 0;
-			controller.check(this.firstChoice, this.secondChoice);
+			console.log("nice try bub");
 		}
 	},
 	processGuess: function(){
