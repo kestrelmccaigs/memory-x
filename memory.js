@@ -11,7 +11,7 @@ var view = {
 	boardSize: "500px",
 	displayTimer: function(){
 		//This code will run the timer at the bottom of the page.
-		document.getElementById("timer").innerHTML = "Time Remaining: " + "PIZZA";
+		document.getElementById("timer").innerHTML = "Time Remaining: " + model.secondsInRound;
 	},
 	displayEndResult: function(){
 		document.getElementById("timer").style.display = "none";
@@ -88,8 +88,8 @@ var model = {
 	numCards: 16,
 	numPairs: 8,
 	matches: 0,
-	secondsInRound: 180,
-	timeRemaining: model.secondsInRound*1000,
+	secondsInRound: 60,
+	timeRemaining: "",
 	score: 0,
 
 	cards: ["zero", "one", "two", "three", "four", "five", "six", "seven",
@@ -163,6 +163,14 @@ var controller = {
 		//this method tells everything to get running for the first round.
 		view.startGame();
 		model.generatePairs();
+		model.timeRemaining = window.setInterval(function(){
+			model.secondsInRound -= 1;
+			console.log(model.secondsInRound);
+			view.displayTimer();
+			if(model.secondsInRound <= 0){
+				controller.endGame();
+			}
+		}, 1000);
 	},
 	isMatch: function(first, second){
 		//ALLLLL this method does is check for a match between two turned-over cards. Returns true for a match and false otherwise.
@@ -180,17 +188,17 @@ var controller = {
 		if(one == two && controller.targetOne !== controller.targetTwo){
 			model.matches++;
 			view.displayMatches();
-			window.setTimeout(function(){ view.displayMatched(controller.targetOne, controller.targetTwo); }, 700);
+			window.setTimeout(function(){ view.displayMatched(controller.targetOne, controller.targetTwo); }, 400);
 			console.log("it's a match made in heaven!");
 		} else {
 			window.setTimeout(function(){
 				view.displayCover(controller.targetOne);
 				view.displayCover(controller.targetTwo);
-			}, 700);
+			}, 400);
 			console.log("no matches here!");
 		}
 		if(model.matches == model.numPairs){
-			window.setTimeout(function(){controller.endGame();}, 700);
+			window.setTimeout(function(){controller.endGame();}, 400);
 		}
 /*		if(this.isMatch(this.firstChoice, this.secondChoice)){
 			view.displayMatched(this.targetOne, this.targetTwo);
@@ -239,7 +247,8 @@ var controller = {
 	},
 	endGame: function(){
 		//stops the timer (once I get the timer working at all), and pulls up the endlevel display.
-		model.score = model.matches + (model.timeRemaining/2);
+		window.clearInterval(model.timeRemaining);
+		model.score = model.matches + Math.floor(model.secondsInRound/2);
 		view.displayEndResult();
 	},
 	thing: function(){
