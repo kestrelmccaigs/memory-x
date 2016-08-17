@@ -20,3 +20,8 @@ Getting these matches to work is really kicking my butt here. Right now (August 
 
 8/16:
 It's actually possible to play a game now! There's no timer to race against, so there's still no way to lose, and the game gets a little glitchy if you try to click on a new card before the previous two selections have cleared away. But you CAN WIN. How exciting!
+
+---
+
+UPDATE:
+Now you can both win AND lose! The timer isn't "PIZZA" anymore, it actually works (and stops when the game ends), and if you don't make all the matches before the end of the game YOU GET A LOSER SCREEN!!!
