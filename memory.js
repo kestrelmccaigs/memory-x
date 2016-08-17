@@ -49,7 +49,7 @@ var view = {
 	},
 	displayCover: function(image){
 		//And this will take care of turning the cards "facedown" either after a set number of seconds (15?) or 3 seconds after a second, non-matching card is clicked. Matched pairs are left face-up, so this function should not mess with them.
-		image.src = this.cover;
+		document.getElementById(image).src = this.cover;
 	},
 	displayMatches: function(){
 		//This code displays text with the current number of matches on the screen
@@ -89,7 +89,7 @@ var model = {
 	numPairs: 8,
 	matches: 0,
 	secondsInRound: 180,
-	timeRemaining: this.secondsInRound*1000,
+	timeRemaining: model.secondsInRound*1000,
 	score: 0,
 
 	cards: ["zero", "one", "two", "three", "four", "five", "six", "seven",
@@ -177,15 +177,20 @@ var controller = {
 	check: function(one, two){
 		//clearInterval(timer);
 		console.log("checking!")
-		if(one == two){
-			view.displayMatched(controller.targetOne, controller.targetTwo);
+		if(one == two && controller.targetOne !== controller.targetTwo){
 			model.matches++;
 			view.displayMatches();
+			window.setTimeout(function(){ view.displayMatched(controller.targetOne, controller.targetTwo); }, 700);
 			console.log("it's a match made in heaven!");
 		} else {
-			view.displayCover(controller.targetOne);
-			view.displayCover(controller.targetTwo);
+			window.setTimeout(function(){
+				view.displayCover(controller.targetOne);
+				view.displayCover(controller.targetTwo);
+			}, 700);
 			console.log("no matches here!");
+		}
+		if(model.matches == model.numPairs){
+			window.setTimeout(function(){controller.endGame();}, 700);
 		}
 /*		if(this.isMatch(this.firstChoice, this.secondChoice)){
 			view.displayMatched(this.targetOne, this.targetTwo);
@@ -231,6 +236,11 @@ var controller = {
 		}
 		//Gathers the info about the two most recent matches.
 		//It also makes sure that the pair turns back over (provided they're not a match) if a third card is clicked. So, the third card would turn faceup at the same time the other two turn facedown.
+	},
+	endGame: function(){
+		//stops the timer (once I get the timer working at all), and pulls up the endlevel display.
+		model.score = model.matches + (model.timeRemaining/2);
+		view.displayEndResult();
 	},
 	thing: function(){
 		var faceCard = 0;
