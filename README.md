@@ -15,3 +15,8 @@ Yesterday was a lot of getting the view object going. Today (July 31) I've been 
 Getting these matches to work is really kicking my butt here. Right now (August 7) you can click on cards to flip them, and the screen will even log a score!
 
 ...But you can't officially win and also oh that's right every individual card you flip counts as a match for some reason? And after the first card is flipped every card gives you two points. Fun new problems, I guess??
+
+---
+
+8/16:
+It's actually possible to play a game now! There's no timer to race against, so there's still no way to lose, and the game gets a little glitchy if you try to click on a new card before the previous two selections have cleared away. But you CAN WIN. How exciting!
